@@ -77,8 +77,14 @@ export async function getListings(
     if (filters.category) mockListings = mockListings.filter(l => l.category === filters.category);
     if (filters.condition) mockListings = mockListings.filter(l => l.condition === filters.condition);
     if (filters.location) mockListings = mockListings.filter(l => l.location === filters.location);
-    if (filters.minPrice) mockListings = mockListings.filter(l => l.price >= filters.minPrice);
-    if (filters.maxPrice) mockListings = mockListings.filter(l => l.price <= filters.maxPrice);
+    if (filters.minPrice !== undefined) {
+      const min = filters.minPrice;
+      mockListings = mockListings.filter(l => l.price >= min);
+    }
+    if (filters.maxPrice !== undefined) {
+      const max = filters.maxPrice;
+      mockListings = mockListings.filter(l => l.price <= max);
+    }
     if (filters.query) {
       const q = filters.query.toLowerCase();
       mockListings = mockListings.filter(l => l.title.toLowerCase().includes(q) || l.description.toLowerCase().includes(q));
