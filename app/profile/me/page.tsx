@@ -61,6 +61,13 @@ export default function MyProfilePage() {
   const [submittingDispute, setSubmittingDispute] = useState(false);
   const [toast, setToast] = useState<string>('');
 
+  const [prevUserId, setPrevUserId] = useState(user?.id);
+
+  if (user?.id !== prevUserId) {
+    setPrevUserId(user?.id);
+    setListingsLoading(true);
+  }
+
   useEffect(() => {
     if (!loading && !user) router.push('/');
   }, [loading, user, router]);
@@ -68,8 +75,6 @@ export default function MyProfilePage() {
   useEffect(() => {
     if (!user?.id) return;
     const sb = createClient();
-
-    setListingsLoading(true);
     Promise.all([
       getListingsByUser(user.id, 'active'),
       getListingsByUser(user.id, 'sold'),

@@ -42,8 +42,16 @@ function ListingsContent() {
   const [allListings, setAllListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const [prevQuery, setPrevQuery] = useState(query);
+  const [prevFilters, setPrevFilters] = useState(filters);
+
+  if (query !== prevQuery || filters !== prevFilters) {
+    setPrevQuery(query);
+    setPrevFilters(filters);
     setLoading(true);
+  }
+
+  useEffect(() => {
     getListings({
       category: filters.category,
       condition: filters.condition,

@@ -21,6 +21,21 @@ export default function Navbar() {
   const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  const [prevUserId, setPrevUserId] = useState(user?.id);
+
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setMenuOpen(false);
+  }
+
+  if (user?.id !== prevUserId) {
+    setPrevUserId(user?.id);
+    if (!user?.id) {
+      setUnreadCount(0);
+    }
+  }
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener('scroll', onScroll);
@@ -37,8 +52,6 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
-  useEffect(() => { setMenuOpen(false); }, [pathname]);
-
   // Lock body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
@@ -47,7 +60,7 @@ export default function Navbar() {
 
   // Unread message count — real-time
   useEffect(() => {
-    if (!user?.id) { setUnreadCount(0); return; }
+    if (!user?.id) return;
     const sb = createClient();
     let mounted = true;
 

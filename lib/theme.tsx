@@ -19,9 +19,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const stored = localStorage.getItem('agora-theme') as Theme | null;
     const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     const initial = stored ?? preferred;
-    setTheme(initial);
     applyTheme(initial);
-    setMounted(true);
+    setTimeout(() => {
+      setTheme(initial);
+      setMounted(true);
+    }, 0);
   }, []);
 
   const toggle = () => {

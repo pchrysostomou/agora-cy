@@ -44,7 +44,9 @@ export default function NewListingPage() {
   const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
-    if (!loading && !user) setAuthOpen(true);
+    if (!loading && !user) {
+      setTimeout(() => setAuthOpen(true), 0);
+    }
   }, [loading, user]);
 
   const stepIndex = STEPS.findIndex((s) => s.id === step);
@@ -85,8 +87,9 @@ export default function NewListingPage() {
         imageFilesRef.current,
       );
       setDone(true);
-    } catch (err: any) {
-      setSubmitError(err.message || 'Σφάλμα κατά τη δημοσίευση. Δοκίμασε ξανά.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : '';
+      setSubmitError(msg || 'Σφάλμα κατά τη δημοσίευση. Δοκίμασε ξανά.');
     } finally {
       setSubmitting(false);
     }
@@ -107,7 +110,7 @@ export default function NewListingPage() {
         </div>
         <h1 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '12px' }}>Η αγγελία δημοσιεύτηκε! 🎉</h1>
         <p style={{ color: 'var(--color-text-muted)', fontSize: '15px', lineHeight: 1.6, marginBottom: '32px' }}>
-          Η αγγελία σου για <strong>"{title}"</strong> είναι τώρα ορατή σε όλους τους χρήστες του Agora.cy.
+          Η αγγελία σου για <strong>&quot;{title}&quot;</strong> είναι τώρα ορατή σε όλους τους χρήστες του Agora.cy.
         </p>
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button

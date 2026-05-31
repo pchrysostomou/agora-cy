@@ -159,7 +159,7 @@ export default function CheckoutModal({ listing, onClose }: Props) {
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
   const [loadingIntent, setLoadingIntent] = useState(false);
   const [intentError, setIntentError] = useState('');
-  const [confetti, setConfetti] = useState<{ x: number; y: number; color: string; id: number }[]>([]);
+  const [confetti, setConfetti] = useState<{ x: number; y: number; color: string; id: number; delay: number }[]>([]);
 
   const CONFETTI_COLORS = ['#09B1BA', '#f59e0b', '#ec4899', '#8b5cf6', '#10b981'];
 
@@ -205,6 +205,7 @@ export default function CheckoutModal({ listing, onClose }: Props) {
     const pieces = Array.from({ length: 35 }, (_, i) => ({
       id: i, x: Math.random() * 100, y: Math.random() * 60,
       color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+      delay: Math.random() * 0.5,
     }));
     setConfetti(pieces);
     setStep('success');
@@ -246,7 +247,7 @@ export default function CheckoutModal({ listing, onClose }: Props) {
             width: '8px', height: '8px', borderRadius: '2px',
             background: p.color,
             animation: 'confettiFall 1.5s ease forwards',
-            animationDelay: `${Math.random() * 0.5}s`,
+            animationDelay: `${p.delay}s`,
             zIndex: 10, pointerEvents: 'none',
           }} />
         ))}

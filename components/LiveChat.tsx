@@ -100,6 +100,14 @@ const QUICK_QUESTIONS = [
 
 let msgId = 0;
 
+function getRandomDelay() {
+  return 800 + Math.random() * 400;
+}
+
+function shouldShowOptions() {
+  return Math.random() > 0.5;
+}
+
 export default function LiveChat() {
   const [open, setOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
@@ -119,7 +127,6 @@ export default function LiveChat() {
 
   useEffect(() => {
     if (open) {
-      setUnread(0);
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [open]);
@@ -134,7 +141,7 @@ export default function LiveChat() {
       setTyping(false);
       setMessages((prev) => [...prev, { id: ++msgId, from: 'bot', text, link, options }]);
       if (!open) setUnread((n) => n + 1);
-    }, 800 + Math.random() * 400);
+    }, getRandomDelay());
   };
 
   const send = (text: string) => {
@@ -145,7 +152,7 @@ export default function LiveChat() {
     const { answer, link } = getBotResponse(text);
 
     // After answering, sometimes offer quick questions again
-    const showOptions = Math.random() > 0.5;
+    const showOptions = shouldShowOptions();
     addBotMessage(answer, link, showOptions ? QUICK_QUESTIONS : undefined);
   };
 
@@ -159,7 +166,16 @@ export default function LiveChat() {
       {/* Floating bubble */}
       <button
         id="live-chat-button"
-        onClick={() => { setOpen((o) => !o); setMinimized(false); }}
+        onClick={() => {
+          setOpen((o) => {
+            const next = !o;
+            if (next) {
+              setUnread(0);
+            }
+            return next;
+          });
+          setMinimized(false);
+        }}
         style={{
           position: 'fixed', bottom: '24px', right: '24px', zIndex: 9999,
           width: '56px', height: '56px', borderRadius: '50%',

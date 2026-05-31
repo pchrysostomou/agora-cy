@@ -27,7 +27,10 @@ export default function MessagesPage() {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user) { setLoading(false); return; }
+    if (!user) {
+      setTimeout(() => setLoading(false), 0);
+      return;
+    }
 
     getAccessToken().then((token) => {
       getConversations(user.id, token ?? '').then((data) => {

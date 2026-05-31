@@ -60,6 +60,7 @@ export default function ListingDetailPage() {
   const sellerReviewCount = seller?.review_count ?? 0;
   const sellerLocation = seller?.location ?? listing.location;
   const sellerVerified = seller?.verified ?? false;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sellerMemberSince = (seller as any)?.created_at ? formatDate((seller as any).created_at) : '';
 
   const isSold = listing.status === 'sold';

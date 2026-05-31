@@ -57,8 +57,10 @@ export default function MessageModal({
     if (!open || !user) return;
 
     let currentToken = '';
-    setLoading(true);
-    setError('');
+    setTimeout(() => {
+      setLoading(true);
+      setError('');
+    }, 0);
 
     getAccessToken().then(async (t) => {
       currentToken = t ?? '';
