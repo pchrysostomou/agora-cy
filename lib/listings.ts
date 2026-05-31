@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/client';
+import { MOCK_LISTINGS, MOCK_USERS } from '@/lib/mock-data';
 
 export interface ListingImage {
   id: string;
@@ -71,8 +72,18 @@ export async function getListings(
 
   const { data, error } = await query;
   if (error) {
-    console.error('[getListings] error:', error);
-    return [];
+    console.warn('[getListings] error (falling back to mock data):', error);
+    let mockListings = getMockListingsMapped();
+    if (filters.category) mockListings = mockListings.filter(l => l.category === filters.category);
+    if (filters.condition) mockListings = mockListings.filter(l => l.condition === filters.condition);
+    if (filters.location) mockListings = mockListings.filter(l => l.location === filters.location);
+    if (filters.minPrice) mockListings = mockListings.filter(l => l.price >= filters.minPrice);
+    if (filters.maxPrice) mockListings = mockListings.filter(l => l.price <= filters.maxPrice);
+    if (filters.query) {
+      const q = filters.query.toLowerCase();
+      mockListings = mockListings.filter(l => l.title.toLowerCase().includes(q) || l.description.toLowerCase().includes(q));
+    }
+    return mockListings.slice(0, limit);
   }
   return (data ?? []) as Listing[];
 }
@@ -96,8 +107,9 @@ export async function getListingById(id: string): Promise<Listing | null> {
     .maybeSingle();
 
   if (error) {
-    console.error('[getListingById] error:', error);
-    return null;
+    console.warn('[getListingById] error (falling back to mock data):', error);
+    const mock = getMockListingsMapped().find(l => l.id === id);
+    return mock ?? null;
   }
   return data as Listing | null;
 }
@@ -121,8 +133,49 @@ export async function getListingsByUser(
   if (status) query = query.eq('status', status);
 
   const { data, error } = await query;
-  if (error) return [];
+  if (error) {
+    console.warn('[getListingsByUser] error (falling back to mock data):', error);
+    let mock = getMockListingsMapped().filter(l => l.seller_id === userId);
+    if (status) mock = mock.filter(l => l.status === status);
+    return mock;
+  }
   return (data ?? []) as Listing[];
+}
+
+function getMockListingsMapped(): Listing[] {
+  return MOCK_LISTINGS.map((ml) => {
+    const user = MOCK_USERS.find((u) => u.id === ml.sellerId);
+    return {
+      id: ml.id,
+      seller_id: ml.sellerId,
+      title: ml.title,
+      description: ml.description,
+      price: ml.price,
+      category: ml.category,
+      condition: ml.condition as any,
+      location: ml.location,
+      status: ml.status as any,
+      views: ml.views,
+      promoted: !!ml.promoted,
+      created_at: ml.createdAt,
+      listing_images: ml.images.map((url, i) => ({
+        id: `img-${ml.id}-${i}`,
+        url,
+        position: i,
+        is_primary: i === 0,
+      })),
+      profiles: user ? {
+        id: user.id,
+        username: user.username,
+        full_name: user.fullName,
+        avatar_url: user.avatar,
+        rating: user.rating,
+        review_count: user.reviewCount,
+        location: user.location,
+        verified: user.verified,
+      } : undefined,
+    };
+  });
 }
 
 export async function createListing(
