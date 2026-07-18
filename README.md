@@ -532,8 +532,6 @@ flowchart LR
 
 ### Suggested Next Steps
 
-* Add `.github/workflows/ci.yml`.
-* Add `.env.example` with placeholder values.
 * Add unit tests for payment fee logic.
 * Add Playwright tests for the main marketplace flow.
 * Add proper admin role management.
@@ -544,8 +542,10 @@ flowchart LR
 
 ---
 
-## Rights
+## License
 
-Private repository. All rights reserved.
+Copyright (c) 2026 Prodromos Chrysostomou. **All Rights Reserved.**
 
-No part of this codebase may be copied, distributed, sublicensed, published, or used without explicit permission from the repository owner.
+This is proprietary software. No part of this codebase may be copied, modified, distributed, sublicensed, published, or used in any way without the prior express written permission of the copyright holder. See [LICENSE](LICENSE) for the full terms.
+
+This repository is publicly viewable for portfolio and demonstration purposes only.
