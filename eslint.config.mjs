@@ -17,6 +17,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local third-party UI reference repo, not part of the project.
+    "__ui_ref/**",
   ]),
 ]);
 
